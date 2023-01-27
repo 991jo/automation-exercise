@@ -55,6 +55,9 @@ jobs:
         with:
           name: coverage_report
 
+      - name: list files
+        run: ls -lah
+
       - name: "generate coverage report"
         run: coverage report
 
