@@ -22,7 +22,44 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.8'
-      - name: "install pytest"
-        run: python -m pip install pytest
+      - name: "install pytest and coverage"
+        run: python -m pip install pytest coverage
+
+      - name: "run pytest and generate coverage report"
+        run: python -m coverage pytest
+
+      - name: "upload coverage report artifact"
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage_report
+          path: .coverage
+          retention-days: 1
 
 
+  coverage_report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.8"
+
+      - name: "install coverage"
+        run: python -m pip install coverage
+
+      - name: "download the previous artifact"
+        uses: actions/download-artifact@v2
+        with:
+          name: coverage_report
+
+      - name: "generate coverage report"
+        run: coverage report
+
+      - name: "generate coverage report as XML"
+        run: coverage xml 
+
+      - name: "upload coverage report XML artifact"
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage.xml
+          path: coverage.xml
+          retention-days: 14
